@@ -21,7 +21,7 @@ module.exports.loadFrom = function (dirname) {
    }
 
    // Add paths to configuration
-   paths = {
+   var paths = {
       root : dirname,
       config : configPath,
    };
