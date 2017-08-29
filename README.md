@@ -32,6 +32,11 @@ console.log(config.paths.myReadme);
 console.log(config.packageJson); // our package.json data
 ```
 
+If you need to access the configuration at a later point from another module, that's easy:
+```js
+var config = require("rf-config").config;
+```
+
 ## Legal Issues
 * Licenese: MIT
 * Author: Felix Furtmayr, Julian von Mendel

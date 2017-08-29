@@ -8,6 +8,9 @@ try {
    logError = require(require.resolve("rf-log")).error;
 } catch(e) {}
 
+var self = module.exports;
+module.exports.config = {};
+
 module.exports.loadFrom = function (dirname) {
    // Determine configuration directory
    var configPath;
@@ -21,15 +24,15 @@ module.exports.loadFrom = function (dirname) {
    }
 
    // Add paths to configuration
-   var paths = {
+   self.paths = {
       root : dirname,
       config : configPath,
    };
 
    var config = require(configPath + "/config.js"); // import global configuration
    config.paths = ((typeof config.paths == 'object') ? config.paths : {});
-   Object.keys(paths).forEach(function (key) {
-      config.paths[key] = paths[key];
+   Object.keys(self.paths).forEach(function (key) {
+      config.paths[key] = self.paths[key];
    });
 
    // Verify existence of all config paths
@@ -52,6 +55,7 @@ module.exports.loadFrom = function (dirname) {
       version: config.packageJson.version,
    };
 
+   self.config = config;
    return config;
 };
 
