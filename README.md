@@ -25,7 +25,7 @@ module.exports = {
       webserver: 'dest',
       server: 'server',
    },
-   "configPaths" : {
+   configPaths : {
       mail : 'mail' // converted to /config/conf/mail (main config folder)
    }
 };
@@ -34,7 +34,7 @@ module.exports = {
 Use this single line:
 
 ```js
-var config = require("rf-config").loadFrom(__dirname); // root path "__dirname"
+var config = require('rf-config').loadFrom(__dirname); // root path '__dirname'
 
 console.log(config);
 // this returns a configuration like:
@@ -66,16 +66,16 @@ console.log(config);
 
 Once Loaded, access the configuration later from another module with:
 ```js
-var config = require("rf-config").config;
+var config = require('rf-config').config;
 ```
 ## Configuration
 ```js
-var setupConfig = require("rf-config");
-setupConfig.paths.customConfigFile =  __dirname + "/newCustomPath/config.js";
-setupConfig.paths.defaultConfigFile =  __dirname + "/newPath/config.js";
-setupConfig.paths.customConfigFolder =  __dirname + "/newCustomPath/";
-setupConfig.paths.defaultConfigFolder =  __dirname + "/newPath/";
-setupConfig.paths.packageJsonPath =  __dirname + "/newPath/packageJson.json";
+var setupConfig = require('rf-config');
+setupConfig.paths.customConfigFile =  __dirname + '/newCustomPath/config.js';
+setupConfig.paths.defaultConfigFile =  __dirname + '/newPath/config.js';
+setupConfig.paths.customConfigFolder =  __dirname + '/newCustomPath/';
+setupConfig.paths.defaultConfigFolder =  __dirname + '/newPath/';
+setupConfig.paths.packageJsonPath =  __dirname + '/newPath/packageJson.json';
 
 var config = setupConfig.loadFrom();
 
