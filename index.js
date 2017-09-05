@@ -1,6 +1,8 @@
 // rf-config, a small config loading lib for NodeJS
 
-var fs = require("fs"); // Filesystem operations
+var fs = require("fs");
+
+// error handling
 var error = console.log;
 try { // try using rf-log
    error = require(require.resolve("rf-log")).error;
