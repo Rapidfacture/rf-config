@@ -3,16 +3,15 @@
 * Simple NodeJS config read-in library
 * Loads a default or custom config file
 * Falls back on `./config/conf/config.js` (custom), then on `./config/conf.default/config.js` if no file specified
-* Adds contents from ./package.json
 * `config.path` variable used to store project paths. Path existence is validated
-* Error handling
-* Optional dependency: Uses rf-log for error logging if available
+* Adds contents from ./package.json
+* Error handling; optional dependency: Uses rf-log for error logging if available
 
 ## Getting Started
 
 > npm install rf-config
 
-To load this config.js file:
+To load this config.js file in `./config/conf/config.js`:
 ```js
 module.exports = {
    config: 'local',
@@ -42,7 +41,7 @@ console.log(config);
    packageJson: {
       name: 'rf-config',
       version: '0.1.6',
-      description: 'Simple NodeJS config loading lib that compiles a reasonable default config variable - no dependencies.',
+      description: 'Simple NodeJS config loading lib',
       author: 'Rapidfacture GmbH',
       license: 'MIT',
       main: 'index.js'
