@@ -3,7 +3,10 @@
 * Simple NodeJS config read-in library
 * Loads a default or custom config file
 * Falls back on `./config/conf/config.js` (custom), then on `./config/conf.default/config.js` if no file specified
-* `config.path` variable used to store project paths. Path existence is validated
+* Loads a default or custom config folder
+* Falls back on `./config/conf/` (custom), then on `./config/conf.default/` if not specified
+* `config.paths` variable used to store project relative paths from root. Paths are made absolute and existence is validated
+* `config.configPaths` variable used to store paths relative in config folder. Paths are made absolute and existence is validated
 * Adds contents from ./package.json
 * Error handling; optional dependency: Uses rf-log for error logging if available
 
@@ -17,9 +20,14 @@ module.exports = {
    config: 'local',
    abc: 'def',
    paths: {
-      myReadme: 'README.md',
-      gitignore: '.gitignore'
+      myReadme: 'README.md', // /README.md in root folder
+      gitignore: '.gitignore',
+      "webserver" : "dest",
+      "server" : "server",
    },
+   "configPaths" : {
+      "mail" : "mail" // converted to /config/conf/mail (main config folder)
+   }
 };
 ```
 
@@ -35,8 +43,11 @@ console.log(config);
    config: 'local',
    abc: 'def',
    paths: {
-      myReadme: 'README.md',
-      gitignore: '.gitignore'
+      myReadme: '/home/user/project/README.md',
+      gitignore: '/home/user/project/.gitignore'
+   },
+   configPaths: {
+      mail: '/home/user/project/config/conf/mail',
    },
    packageJson: {
       name: 'rf-config',
@@ -62,6 +73,8 @@ var config = require("rf-config").config;
 var setupConfig = require("rf-config");
 setupConfig.paths.customConfigFile =  __dirname + "/newCustomPath/config.js";
 setupConfig.paths.defaultConfigFile =  __dirname + "/newPath/config.js";
+setupConfig.paths.customConfigFolder =  __dirname + "/newCustomPath/";
+setupConfig.paths.defaultConfigFolder =  __dirname + "/newPath/";
 setupConfig.paths.packageJsonPath =  __dirname + "/newPath/packageJson.json";
 
 var config = setupConfig.loadFrom();

@@ -1,10 +1,13 @@
 // rf-config, a small config loading lib for NodeJS
 
 var fs = require("fs"); // Filesystem operations
-var logError = console.log;
+var error = console.log;
 try { // try using rf-log
-   logError = require(require.resolve("rf-log")).error;
+   error = require(require.resolve("rf-log")).error;
 } catch (e) {}
+function logError (err){
+   throw new Error(error(err));
+}
 
 module.exports.config = {};
 var paths = module.exports.paths = {};
@@ -14,11 +17,7 @@ var config = {};
 
 module.exports.loadFrom = function(dirname) {
 
-   // defaults
-   paths.root = dirname || __dirname;
-   config.paths = config.paths || {};
-   config.paths.root = config.paths.root || paths.root; // import root path
-
+   paths.root = dirname + "/" || __dirname + "/";
 
 
    // get config file
@@ -27,20 +26,27 @@ module.exports.loadFrom = function(dirname) {
    } else if (tryConfigPath(paths.root + "/config/conf/config.js")) {
    } else if (tryConfigPath(paths.root + "/config/conf.default/config.js")) {
    } else {
-             logError("Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
+             logError("[rf-config] Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
                "' and standard:'" + paths.defaultConfigFile + "'", "Please create a config file");
               return;
    }
+   config.paths = config.paths || {};
+   validatePathesAndMakeAbsolute(config.paths, paths.root);
+   config.paths.root = config.paths.root || paths.root; // import root path
 
 
 
-   // verify config.paths
-   for (var key in config.paths) {
-      var path = config.paths[key];
-      if (!pathExists(path)) {
-         logError("Directory '" + path + "' does not exist -- please create it.");
-         return;
+   // get config folder
+   if(config.configPaths){
+            if (tryConfigFolder(paths.customConfigFolder)) {
+      } else if (tryConfigFolder(paths.defaultConfigFolder)) {
+      } else if (tryConfigFolder(paths.root + "/config/conf/")) {
+      } else if (tryConfigFolder(paths.root + "/config/conf.default/")) {
+      } else {
+               throw (logError("[rf-config] Both config file pathes seem incorrect; custom: '" + paths.customConfigFolder +
+                 "' and standard:'" + paths.defaultConfigFolder + "'", "Please create a config file"));
       }
+      validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
    }
 
 
@@ -55,6 +61,8 @@ module.exports.loadFrom = function(dirname) {
          name: config.packageJson.name,
          version: config.packageJson.version,
       };
+   }else{
+      logError("[rf-config] packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
    }
 
 
@@ -63,6 +71,27 @@ module.exports.loadFrom = function(dirname) {
    return config;
 };
 
+
+function validatePathesAndMakeAbsolute(pathArray, prefix) {
+   for (var key in pathArray) {
+
+      if(prefix){{
+         pathArray[key] = prefix + pathArray[key]; // prefix => make everything absolute
+      }}
+
+      if (!pathExists(pathArray[key])) {
+         logError("[rf-config] Directory '" + pathArray[key] + "' does not exist -- please create it.");
+      }
+   }
+}
+
+function tryConfigFolder(path) {
+   if(pathExists(path)){
+      config.paths.configFolder = path;
+      return true;
+   }
+   return false;
+}
 
 function tryConfigPath(path) {
    if(pathExists(path)){
