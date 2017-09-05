@@ -2,60 +2,74 @@
 
 var fs = require("fs"); // Filesystem operations
 var logError = console.log;
-
-// use rf-log for error logging if available
-try {
+try { // try using rf-log
    logError = require(require.resolve("rf-log")).error;
-} catch(e) {}
+} catch (e) {}
 
-var self = module.exports;
 module.exports.config = {};
+var paths = module.exports.paths = {};
+var config = {};
 
-module.exports.loadFrom = function (dirname) {
-   // Determine configuration directory
-   var configPath;
-   checkPath(dirname + "/config/conf.default"); // set path to standard path
-   checkPath(dirname + "/config/conf"); // custom folder? => set path to it
 
-   function checkPath(path){
-      if (fs.existsSync(path)){
-         configPath = path;
-      }
+
+module.exports.loadFrom = function(dirname) {
+
+
+   // get config file
+   paths.root = dirname || __dirname;
+   if (tryConfigPath(paths.customConfigFile)) {
+   } else if (tryConfigPath(paths.defaultConfigFile)) {
+   } else if (tryConfigPath(paths.root + "/config/conf/config.js")) {
+   } else if (tryConfigPath(paths.root + "/config/conf.default/config.js")) {
+   } else {
+      logError("Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
+         "' and standard:'" + paths.defaultConfigFile + "'", "Please create a config file");
+      return;
    }
 
-   // Add paths to configuration
-   self.paths = {
-      root : dirname,
-      config : configPath,
-   };
 
-   var config = require(configPath + "/config.js"); // import global configuration
-   config.paths = ((typeof config.paths == 'object') ? config.paths : {});
-   Object.keys(self.paths).forEach(function (key) {
-      config.paths[key] = self.paths[key];
-   });
+   config.paths = config.paths || {};
+   config.paths.root = config.paths.root || paths.root; // import root path
 
-   // Verify existence of all config paths
-   Object.keys(config.paths).forEach(function (key) {
+
+   // verify config.paths
+   for (var key in config.paths) {
       var path = config.paths[key];
-      if (!fs.existsSync(path)) {
+      if (!pathExists(path)) {
          logError("Directory '" + path + "' does not exist -- please create it.");
          return;
       }
-   });
-   
+   }
+
+
    // Add package.json to configuration
-   var packageJson = fs.readFileSync(dirname + '/package.json',
-         { encoding: 'utf8' });
-   
-   config.packageJson = JSON.parse(packageJson);
+   paths.packageJsonPath = paths.packageJsonPath || paths.root + '/package.json';
+   if (pathExists(paths.packageJsonPath)) {
+      config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
+         encoding: 'utf8'
+      }));
 
-   config.app = {
-      name: config.packageJson.name,
-      version: config.packageJson.version,
-   };
+      config.app = {
+         name: config.packageJson.name,
+         version: config.packageJson.version,
+      };
+   }
 
-   self.config = config;
+
+   module.exports.config = config;
+
    return config;
 };
 
+
+function tryConfigPath(path) {
+   if(pathExists(path)){
+      config = require(path);
+      return true;
+   }
+   return false;
+}
+
+function pathExists(path) {
+   return (fs.existsSync(path));
+}

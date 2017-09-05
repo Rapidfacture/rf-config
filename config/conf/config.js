@@ -1,7 +1,7 @@
 /* Configuration */
 
 module.exports = {
-   "config": "default",
+   "config": "custom",
    "abc": "def",
    "paths": {
       "myReadme" : "README.md",
