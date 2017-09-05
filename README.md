@@ -22,11 +22,11 @@ module.exports = {
    paths: {
       myReadme: 'README.md', // /README.md in root folder
       gitignore: '.gitignore',
-      "webserver" : "dest",
-      "server" : "server",
+      webserver: 'dest',
+      server: 'server',
    },
    "configPaths" : {
-      "mail" : "mail" // converted to /config/conf/mail (main config folder)
+      mail : 'mail' // converted to /config/conf/mail (main config folder)
    }
 };
 ```
