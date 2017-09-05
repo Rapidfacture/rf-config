@@ -70,7 +70,11 @@ var config = setupConfig.loadFrom();
 console.log(config);
 
 ```
+## Testing
+Run the test script:
+> node test.js
 
+Please also lint the file using jshint.
 
 ## Legal Issues
 * Licenese: MIT
