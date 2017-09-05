@@ -1,6 +1,6 @@
 {
     "name": "rf-config",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Simple NodeJS config loading lib that compiles a reasonable default config variable - no dependencies.",
     "author": "Rapidfacture GmbH",
     "license": "MIT",

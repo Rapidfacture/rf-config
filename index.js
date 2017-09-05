@@ -14,22 +14,24 @@ var config = {};
 
 module.exports.loadFrom = function(dirname) {
 
+   // defaults
+   paths.root = dirname || __dirname;
+   config.paths = config.paths || {};
+   config.paths.root = config.paths.root || paths.root; // import root path
+
+
 
    // get config file
-   paths.root = dirname || __dirname;
-   if (tryConfigPath(paths.customConfigFile)) {
+          if (tryConfigPath(paths.customConfigFile)) {
    } else if (tryConfigPath(paths.defaultConfigFile)) {
    } else if (tryConfigPath(paths.root + "/config/conf/config.js")) {
    } else if (tryConfigPath(paths.root + "/config/conf.default/config.js")) {
    } else {
-      logError("Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
-         "' and standard:'" + paths.defaultConfigFile + "'", "Please create a config file");
-      return;
+             logError("Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
+               "' and standard:'" + paths.defaultConfigFile + "'", "Please create a config file");
+              return;
    }
 
-
-   config.paths = config.paths || {};
-   config.paths.root = config.paths.root || paths.root; // import root path
 
 
    // verify config.paths

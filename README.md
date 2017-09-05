@@ -1,43 +1,77 @@
 # rf-config
 
-* Simple NodeJS config read-in lib
+* Simple NodeJS config read-in library
+* Loads a default or custom config file
+* Falls back on `./config/conf/config.js` (custom), then on `./config/conf.default/config.js` if no file specified
+* Adds contents from ./package.json
+* `config.path` variable used to store project paths. Path existence is validated
+* Error handling
 * Optional dependency: Uses rf-log for error logging if available
-* Configurable base dir
-* Creates a config variable with object from ./config/conf/config.js, if directory is available. As a fallback, ./config/conf.default/ is used.
-* Additionally, contents from ./package.json are inserted into that same configuration variable
-* The existence of all paths you define in your config.js in the "paths" key is verified and errors are logged
 
 ## Getting Started
 
 > npm install rf-config
 
-config.js files are of this format:
+To load this config.js file:
 ```js
 module.exports = {
-   "abc": "def",
-   "paths": {
-      "myReadme" : paths.root + "/README.md",
-      "myTxtConfig" : paths.config + "/otherconfigfile.txt",
+   config: 'local',
+   abc: 'def',
+   paths: {
+      myReadme: 'README.md',
+      gitignore: '.gitignore'
    },
 };
 ```
 
-To load the configuration, you use a single line:
-```js
-config = require("rf-config").loadFrom(__dirname);
+Use this single line:
 
-console.log(config.paths.root); // our root path "__dirname"
-console.log(config.paths.config); // configuration directory
-console.log(config.paths.myReadme);
-console.log(config.packageJson); // our package.json data
+```js
+var config = require("rf-config").loadFrom(__dirname); // root path "__dirname"
+
+console.log(config);
+// this returns a configuration like:
+
+{
+   config: 'local',
+   abc: 'def',
+   paths: {
+      myReadme: 'README.md',
+      gitignore: '.gitignore'
+   },
+   packageJson: {
+      name: 'rf-config',
+      version: '0.1.6',
+      description: 'Simple NodeJS config loading lib that compiles a reasonable default config variable - no dependencies.',
+      author: 'Rapidfacture GmbH',
+      license: 'MIT',
+      main: 'index.js'
+   },
+   app: {
+      name: 'rf-config',
+      version: '0.1.6'
+   }
+}
 ```
 
-If you need to access the configuration at a later point from another module, that's easy:
+Once Loaded, access the configuration later from another module with:
 ```js
 var config = require("rf-config").config;
 ```
+## Configuration
+```js
+var setupConfig = require("rf-config");
+setupConfig.paths.customConfigFile =  __dirname + "/newCustomPath/config.js";
+setupConfig.paths.defaultConfigFile =  __dirname + "/newPath/config.js";
+setupConfig.paths.packageJsonPath =  __dirname + "/newPath/packageJson.json";
+
+var config = setupConfig.loadFrom();
+
+console.log(config);
+
+```
+
 
 ## Legal Issues
 * Licenese: MIT
 * Author: Felix Furtmayr, Julian von Mendel
-
