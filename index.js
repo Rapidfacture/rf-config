@@ -30,9 +30,9 @@ module.exports.loadFrom = function(dirname) {
    } else if (tryConfigPath(paths.root + "config/conf/config.js")) {
    } else if (tryConfigPath(paths.root + "config/conf.default/config.js")) {
    } else {
-             logError("[rf-config] Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
-               "' and standard:'" + paths.defaultConfigFile + "'", "Please create a config file");
-              return;
+       logError("[rf-config] Both config file pathes seem incorrect; customConfigFile: '" + paths.customConfigFile +
+         "' and defaultConfigFile:'" + paths.defaultConfigFile + "'", "Please create a config file");
+        return;
    }
    config.paths = {}; // clear => prevent addition of absolute prefix several times
    validatePathesAndMakeAbsolute(config.paths, paths.root);
@@ -48,8 +48,8 @@ module.exports.loadFrom = function(dirname) {
       } else if (tryConfigFolder(paths.root + "config/conf/")) {
       } else if (tryConfigFolder(paths.root + "config/conf.default/")) {
       } else {
-               throw (logError("[rf-config] Both config folder pathes seem incorrect; custom: '" + paths.customConfigFolder +
-                 "' and standard:'" + paths.defaultConfigFolder + "'", "Please create a config file"));
+         logError("[rf-config] Both config folder pathes seem incorrect; customConfigFolder: '" + paths.customConfigFolder +
+           "' and defaultConfigFolder:'" + paths.defaultConfigFolder + "'", "Please create a config file");
       }
       config.configPaths = {}; // clear => prevent addition of absolute prefix several times
       validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
@@ -62,9 +62,13 @@ module.exports.loadFrom = function(dirname) {
    // get package.json
    paths.packageJsonPath = paths.packageJsonPath || paths.root + 'package.json';
    if (pathExists(paths.packageJsonPath)) {
-      config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
-         encoding: 'utf8'
-      }));
+      try {
+         config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
+            encoding: 'utf8'
+         }));
+      } catch (err) {
+         logError("[rf-config] packageJson Error ",  err);
+      }
 
       config.app = {
          name: config.packageJson.name,
