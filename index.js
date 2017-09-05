@@ -19,20 +19,20 @@ var config = {};
 
 module.exports.loadFrom = function(dirname) {
 
-   paths.root = dirname + "/" || __dirname + "/";
-
+   paths.root = dirname  || __dirname ;
+   paths.root  += "/";
 
    // get config file
           if (tryConfigPath(paths.customConfigFile)) {
    } else if (tryConfigPath(paths.defaultConfigFile)) {
-   } else if (tryConfigPath(paths.root + "/config/conf/config.js")) {
-   } else if (tryConfigPath(paths.root + "/config/conf.default/config.js")) {
+   } else if (tryConfigPath(paths.root + "config/conf/config.js")) {
+   } else if (tryConfigPath(paths.root + "config/conf.default/config.js")) {
    } else {
              logError("[rf-config] Both config file pathes seem incorrect; custom: '" + paths.customConfigFile +
                "' and standard:'" + paths.defaultConfigFile + "'", "Please create a config file");
               return;
    }
-   config.paths = config.paths || {};
+   config.paths = {}; // clear => prevent addition of absolute prefix several times
    validatePathesAndMakeAbsolute(config.paths, paths.root);
    config.paths.root = config.paths.root || paths.root; // import root path
 
@@ -42,18 +42,19 @@ module.exports.loadFrom = function(dirname) {
    if(config.configPaths){
             if (tryConfigFolder(paths.customConfigFolder)) {
       } else if (tryConfigFolder(paths.defaultConfigFolder)) {
-      } else if (tryConfigFolder(paths.root + "/config/conf/")) {
-      } else if (tryConfigFolder(paths.root + "/config/conf.default/")) {
+      } else if (tryConfigFolder(paths.root + "config/conf/")) {
+      } else if (tryConfigFolder(paths.root + "config/conf.default/")) {
       } else {
-               throw (logError("[rf-config] Both config file pathes seem incorrect; custom: '" + paths.customConfigFolder +
+               throw (logError("[rf-config] Both config folder pathes seem incorrect; custom: '" + paths.customConfigFolder +
                  "' and standard:'" + paths.defaultConfigFolder + "'", "Please create a config file"));
       }
+      config.configPaths = {}; // clear => prevent addition of absolute prefix several times
       validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
    }
 
 
    // Add package.json to configuration
-   paths.packageJsonPath = paths.packageJsonPath || paths.root + '/package.json';
+   paths.packageJsonPath = paths.packageJsonPath || paths.root + 'package.json';
    if (pathExists(paths.packageJsonPath)) {
       config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
          encoding: 'utf8'
