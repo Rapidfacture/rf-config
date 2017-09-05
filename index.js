@@ -22,6 +22,8 @@ module.exports.loadFrom = function(dirname) {
    paths.root = dirname  || __dirname ;
    paths.root  += "/";
 
+
+
    // get config file
           if (tryConfigPath(paths.customConfigFile)) {
    } else if (tryConfigPath(paths.defaultConfigFile)) {
@@ -35,6 +37,7 @@ module.exports.loadFrom = function(dirname) {
    config.paths = {}; // clear => prevent addition of absolute prefix several times
    validatePathesAndMakeAbsolute(config.paths, paths.root);
    config.paths.root = config.paths.root || paths.root; // import root path
+
 
 
 
@@ -53,7 +56,10 @@ module.exports.loadFrom = function(dirname) {
    }
 
 
-   // Add package.json to configuration
+
+
+
+   // get package.json
    paths.packageJsonPath = paths.packageJsonPath || paths.root + 'package.json';
    if (pathExists(paths.packageJsonPath)) {
       config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
@@ -69,10 +75,13 @@ module.exports.loadFrom = function(dirname) {
    }
 
 
+
+
    module.exports.config = config;
 
    return config;
 };
+
 
 
 function validatePathesAndMakeAbsolute(pathArray, prefix) {
