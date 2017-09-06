@@ -7,4 +7,7 @@ module.exports = {
       "myReadme" : "README.md",
       "gitignore" : ".gitignore",
    },
+   "configPaths": {
+      "testFile" : "testFile",
+   },
 };

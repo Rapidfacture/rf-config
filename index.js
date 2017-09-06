@@ -19,6 +19,9 @@ var config = {};
 
 module.exports.loadFrom = function(dirname) {
 
+   config.paths = {}; // clear => prevent addition of absolute prefix several times
+   config.configPaths = {};
+
    paths.root = dirname  || __dirname ;
    paths.root  += "/";
 
@@ -34,7 +37,6 @@ module.exports.loadFrom = function(dirname) {
          "' and defaultConfigFile:'" + paths.defaultConfigFile + "'", "Please create a config file");
         return;
    }
-   config.paths = {}; // clear => prevent addition of absolute prefix several times
    validatePathesAndMakeAbsolute(config.paths, paths.root);
    config.paths.root = config.paths.root || paths.root; // import root path
 
@@ -51,7 +53,6 @@ module.exports.loadFrom = function(dirname) {
          logError("[rf-config] Both config folder pathes seem incorrect; customConfigFolder: '" + paths.customConfigFolder +
            "' and defaultConfigFolder:'" + paths.defaultConfigFolder + "'", "Please create a config file");
       }
-      config.configPaths = {}; // clear => prevent addition of absolute prefix several times
       validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
    }
 
@@ -89,6 +90,7 @@ module.exports.loadFrom = function(dirname) {
 
 
 function validatePathesAndMakeAbsolute(pathArray, prefix) {
+
    for (var key in pathArray) {
 
       if(prefix){{
@@ -101,17 +103,29 @@ function validatePathesAndMakeAbsolute(pathArray, prefix) {
    }
 }
 
-function tryConfigFolder(path) {
+
+function tryConfigPath(path) {
    if(pathExists(path)){
-      config.paths.configFolder = path;
+      try {
+         var confTemp = require(path);
+         try {
+            // copy; keep original clean => loading again possible
+            config = JSON.parse(JSON.stringify(confTemp));
+         } catch (err) {
+            logError("[rf-config] Error in parsing config file " + path,  err);
+         }
+      } catch (err) {
+         logError("[rf-config] Error in loading config file " + path,  err);
+      }
+
       return true;
    }
    return false;
 }
 
-function tryConfigPath(path) {
+function tryConfigFolder(path) {
    if(pathExists(path)){
-      config = require(path);
+      config.paths.configFolder = path;
       return true;
    }
    return false;
