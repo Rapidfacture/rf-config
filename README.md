@@ -85,12 +85,11 @@ console.log(config);
 
 ```
 ## Testing
-Run the test scripts:
-> node test1.js
+Run the test script:
+> sh test.sh
 
-> node test2.js
+This runs each node script (test1.js, test2.js, ...)
 
-> node test3.js
 
 Please also lint the file using jshint.
 
