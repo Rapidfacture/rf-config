@@ -1,20 +1,10 @@
 // test script for rf-log
 
+var config = require("./index.js").init(__dirname);
+testConfig(config, "standard config; dirname from script");
 
-testConfig(require("./index.js").loadFrom(), "standard config; no dirname");
-
-
-testConfig(require("./index.js").loadFrom(__dirname), "standard config; dirname from script");
-
-
-var modifiedVariables = require("./index.js");
-modifiedVariables.paths.customConfigFile =  __dirname + "/config/conf.local/config.js";
-modifiedVariables = modifiedVariables.loadFrom();
-testConfig(modifiedVariables, "modifiedVariables");
-
-
-console.log("\x1b[32m", "All tests fine. config is: ", '\x1b[0m');
-console.log(modifiedVariables);
+console.log("\x1b[32m", "Test is fine. config is: ", '\x1b[0m');
+console.log(config);
 
 
 function testConfig(config, testName){

@@ -34,7 +34,7 @@ module.exports = {
 Use this single line:
 
 ```js
-var config = require('rf-config').loadFrom(__dirname); // root path '__dirname'
+var config = require('rf-config').init(__dirname); // root path '__dirname'
 
 console.log(config);
 // this returns a configuration like:
@@ -64,10 +64,12 @@ console.log(config);
 }
 ```
 
-Once Loaded, access the configuration later from another module with:
+Once Loaded, access the configuration later in other files with:
 ```js
-var config = require('rf-config').config;
+var config = require('rf-config');
 ```
+NOTE: The `init` function is only present the first time, as the config should be loaded only once - when the project starts.
+
 ## Configuration
 ```js
 var setupConfig = require('rf-config');
@@ -77,14 +79,18 @@ setupConfig.paths.customConfigFolder =  __dirname + '/newCustomPath/';
 setupConfig.paths.defaultConfigFolder =  __dirname + '/newPath/';
 setupConfig.paths.packageJsonPath =  __dirname + '/newPath/packageJson.json';
 
-var config = setupConfig.loadFrom();
+var config = setupConfig.init();
 
 console.log(config);
 
 ```
 ## Testing
-Run the test script:
-> node test.js
+Run the test scripts:
+> node test1.js
+
+> node test2.js
+
+> node test3.js
 
 Please also lint the file using jshint.
 

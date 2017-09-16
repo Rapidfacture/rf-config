@@ -3,28 +3,25 @@
 var fs = require("fs");
 
 // error handling
-var error = console.log;
+var logError = function(err){
+   throw new Error(console.log(err));
+};
 try { // try using rf-log
-   error = require(require.resolve("rf-log")).error;
+   var critical = require(require.resolve("rf-log")).critical;
+   if(critical) logError = critical;
 } catch (e) {}
-function logError (err){
-   throw new Error(error(err));
-}
-
-module.exports.config = {};
-var paths = module.exports.paths = {};
-var config = {};
 
 
 
-module.exports.loadFrom = function(dirname) {
+var config = {
+      paths: {},
+      configPaths: {}
+   },
+   init = function(dirname) {
 
-   config.paths = {}; // clear => prevent addition of absolute prefix several times
-   config.configPaths = {};
-
+   var paths = module.exports.paths;
    paths.root = dirname  || __dirname ;
    paths.root  += "/";
-
 
 
    // get config file
@@ -80,12 +77,21 @@ module.exports.loadFrom = function(dirname) {
    }
 
 
+   // put config in export
+   // the init function is no longer accessibel => config should not be loaded twice!
+   module.exports = config;
 
-
-   module.exports.config = config;
-
-   return config;
+   return module.exports;
 };
+
+
+
+// expose interface
+module.exports = {
+   paths:{}
+};
+module.exports.init = init; // return once for module init
+
 
 
 
