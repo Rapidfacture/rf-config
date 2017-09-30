@@ -61,13 +61,14 @@ var config = {
    paths.packageJsonPath = paths.packageJsonPath || paths.root + 'package.json';
    if (pathExists(paths.packageJsonPath)) {
       try {
-         config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
+         var packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
             encoding: 'utf8'
          }));
 
          config.app = {
             name: config.packageJson.name,
             version: config.packageJson.version,
+            packageJson: packageJson
          };
 
       } catch (err) {
@@ -86,7 +87,7 @@ var config = {
 
       try {
          config.app = config.app || {};
-         config.app.license = fs.readFileSync(paths.packageJsonPath, {
+         config.app.license = fs.readFileSync(paths.licenseFile, {
             encoding: 'utf8'
          });
 
