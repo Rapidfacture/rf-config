@@ -24,6 +24,7 @@ var config = {
    paths.root  += "/";
 
 
+
    // get config file
           if (tryConfigPath(paths.customConfigFile)) {
    } else if (tryConfigPath(paths.defaultConfigFile)) {
@@ -56,7 +57,6 @@ var config = {
 
 
 
-
    // get package.json
    paths.packageJsonPath = paths.packageJsonPath || paths.root + 'package.json';
    if (pathExists(paths.packageJsonPath)) {
@@ -64,17 +64,42 @@ var config = {
          config.packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
             encoding: 'utf8'
          }));
+
+         config.app = {
+            name: config.packageJson.name,
+            version: config.packageJson.version,
+         };
+
+      } catch (err) {
+         logError("[rf-config] packageJson Error ",  err);
+      }
+   }else{
+      logError("[rf-config] packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
+   }
+
+
+
+
+   // get license file
+   paths.licenseFile = paths.licenseFile || paths.root + 'LICENSE';
+   if (pathExists(paths.licenseFile)) {
+
+      try {
+         config.app = config.app || {};
+         config.app.license = fs.readFileSync(paths.packageJsonPath, {
+            encoding: 'utf8'
+         });
+
       } catch (err) {
          logError("[rf-config] packageJson Error ",  err);
       }
 
-      config.app = {
-         name: config.packageJson.name,
-         version: config.packageJson.version,
-      };
    }else{
-      logError("[rf-config] packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
+      logError("[rf-config] licenseFile '" + paths.licenseFile + "' does not exist.");
    }
+
+
+
 
 
    // put config in export

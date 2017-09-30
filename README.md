@@ -7,7 +7,8 @@
 * Falls back on `./config/conf/` (custom), then on `./config/conf.default/` if not specified
 * `config.paths` variable used to store project relative paths from root. Paths are made absolute and existence is validated
 * `config.configPaths` variable used to store paths relative in config folder. Paths are made absolute and existence is validated
-* Adds contents from ./package.json
+* Adds content from ./package.json (required)
+* Adds content from ./LICENSE (required)
 * Error handling; optional dependency: Uses rf-log for error logging if available
 
 ## Getting Started
@@ -78,6 +79,7 @@ setupConfig.paths.defaultConfigFile =  __dirname + '/newPath/config.js';
 setupConfig.paths.customConfigFolder =  __dirname + '/newCustomPath/';
 setupConfig.paths.defaultConfigFolder =  __dirname + '/newPath/';
 setupConfig.paths.packageJsonPath =  __dirname + '/newPath/packageJson.json';
+setupConfig.paths.licenseFile =  __dirname + '/newPath/LICENSE';
 
 var config = setupConfig.init();
 
