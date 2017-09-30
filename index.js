@@ -66,8 +66,8 @@ var config = {
          }));
 
          config.app = {
-            name: config.packageJson.name,
-            version: config.packageJson.version,
+            name: packageJson.name,
+            version: packageJson.version,
             packageJson: packageJson
          };
 
@@ -92,7 +92,7 @@ var config = {
          });
 
       } catch (err) {
-         logError("[rf-config] packageJson Error ",  err);
+         logError("[rf-config] licenseFile Error ",  err);
       }
 
    }else{
