@@ -68,7 +68,7 @@ var config = {
          config.app = {
             name: packageJson.name,
             version: packageJson.version,
-            packageJson: 12
+            packageJson: packageJson
          };
 
       } catch (err) {
