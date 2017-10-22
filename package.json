@@ -1,8 +1,11 @@
 {
     "name": "rf-config",
-    "version": "0.1.11",
+    "version": "0.1.12",
     "description": "NodeJS config loader. Reads a config.js the package.json and LICENSE. Fallback mode on default config. No dependencies.",
     "author": "Rapidfacture GmbH",
     "license": "MIT",
-    "main": "index.js"
+    "main": "index.js",
+    "scripts": {
+      "prepublish": "sh test.sh"
+    }
 }

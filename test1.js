@@ -5,3 +5,5 @@ var test =  require("./tester.js");
 
 var config = require("./index.js").init();
 test(config, "standard config; no dirname");
+
+process.exit(1);

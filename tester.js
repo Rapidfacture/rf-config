@@ -5,7 +5,7 @@ function tester(config, testName){
    test("config.abc", config.abc, 'def');
    test("config.paths.myReadme", config.paths.myReadme);
    test("config.configPaths.testFile", config.configPaths.testFile);
-   test("config.packageJson.name", config.packageJson.name, 'rf-config');
+   test("config.app.packageJson.name", config.app.packageJson.name, 'rf-config');
    test("config.app.name", config.app.name, 'rf-config');
    console.log("\x1b[32m", "test passed.", '\x1b[0m');
    //console.log("config is: ", config);

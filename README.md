@@ -50,17 +50,17 @@ console.log(config);
    configPaths: {
       mail: '/home/user/project/config/conf/mail',
    },
-   packageJson: {
-      name: 'rf-config',
-      version: '0.1.6',
-      description: 'Simple NodeJS config loading lib',
-      author: 'Rapidfacture GmbH',
-      license: 'MIT',
-      main: 'index.js'
-   },
    app: {
       name: 'rf-config',
-      version: '0.1.6'
+      version: '0.1.6',
+      packageJson: {
+         name: 'rf-config',
+         version: '0.1.6',
+         description: 'Simple NodeJS config loading lib',
+         author: 'Rapidfacture GmbH',
+         license: 'MIT',
+         main: 'index.js'
+      }
    }
 }
 ```
