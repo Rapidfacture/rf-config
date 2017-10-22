@@ -16,13 +16,15 @@ function test(name, value, equals){
          if(value){
             //console.log("test passed:", value);
          }else {
-            throw("Error validating '" + name + "' value is: '" + equals);
+            console.error("Error validating '" + name + "' value is: '" + equals);
+            process.exit(1);
          }
       }else{
          if(value && value == equals){
             //console.log("test passed:", value + " is " + equals);
          }else {
-            throw("Error validating '" + name + "' value should be: '" + equals + "' but is '" + value +"'");
+            console.error("Error validating '" + name + "' value should be: '" + equals + "' but is '" + value +"'");
+            process.exit(1);
          }
       }
 }
