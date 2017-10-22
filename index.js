@@ -136,7 +136,7 @@ function validatePathesAndMakeAbsolute(pathArray, prefix) {
 }
 
 
-function tryConfigPath(path) {
+
    if(pathExists(path)){
       try {
          var confTemp = require(path);
