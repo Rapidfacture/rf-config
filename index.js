@@ -68,7 +68,7 @@ var config = {
          config.app = {
             name: packageJson.name,
             version: packageJson.version,
-            packageJson: packageJson
+            packageJson: 12
          };
 
       } catch (err) {
@@ -136,7 +136,7 @@ function validatePathesAndMakeAbsolute(pathArray, prefix) {
 }
 
 
-
+function tryConfigPath(path) {
    if(pathExists(path)){
       try {
          var confTemp = require(path);

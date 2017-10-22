@@ -6,8 +6,8 @@
     "license": "MIT",
     "main": "index.js",
     "scripts": {
-      "prepush": "sh test.sh",
-      "prepublish": "sh test.sh"
+      "prepush": "node test.js",
+      "prepublish": "node test.js"
    },
     "devDependencies": {
       "husky": "0.14.3"
