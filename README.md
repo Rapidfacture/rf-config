@@ -86,14 +86,17 @@ var config = setupConfig.init();
 console.log(config);
 
 ```
-## Testing
-Run the test script:
-> sh test.sh
 
-This runs each node script (test1.js, test2.js, ...)
+## Development
 
+Install the dev tools with
 
-Please also lint the file using jshint.
+> npm install
+
+Then you can runs some test cases and eslint with:
+
+> npm test
+
 
 ## Legal Issues
 * Licenese: MIT
