@@ -1,7 +1,9 @@
 // test script for rf-log
 
-var config = require("./index.js");
-config.paths.customConfigFile =  __dirname + "/config/conf.local/config.js";
-config = config.init();
+var config = require('./index.js')
+var path = require('path')
 
-require("./test4_mainFile.js");
+config.paths.customConfigFile = path.join(__dirname, '/config/conf.local/config.js')
+config = config.init()
+
+require('./test4_mainFile.js')
