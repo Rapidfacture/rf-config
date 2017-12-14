@@ -7,8 +7,8 @@
     "main": "index.js",
     "scripts": {
       "prepush": "npm test",
-      "prepublish": "npm test",
-      "test": "grunt && node test.js"
+      "prepublish": "sh test/isRepoClean && npm test",
+      "test": "grunt"
    },
     "devDependencies": {
       "husky": "0.14.3",
