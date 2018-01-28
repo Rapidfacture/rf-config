@@ -10,12 +10,10 @@
      },
     "main": "index.js",
     "scripts": {
-      "prepush": "npm test",
       "prepublish": "sh test/isRepoClean && npm test",
       "test": "grunt"
    },
     "devDependencies": {
-      "husky": "0.14.3",
       "grunt":"1.0.1",
       "grunt-eslint":"20.1.0"
    }
