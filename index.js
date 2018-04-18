@@ -12,6 +12,17 @@ try { // try using rf-log
 } catch (e) {}
 
 
+function logWarning () {
+   var args = [].slice.apply(arguments); // convert arguments to an array
+   var red = '\x1b[31m';
+   var black = '\x1b[0m';
+   args.unshift(red);
+   args.unshift('[rf-config]');
+   args.push(black);
+   console.log.apply(this, args);
+}
+
+
 
 var config = {
       paths: {},
@@ -73,6 +84,17 @@ var config = {
       } else {
          logError("[rf-config] packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
       }
+
+
+
+      // check if packageJson dependencies are up to Date
+      require('check-dependencies')().then(function (output) {
+         console.log(output);
+         logWarning(output);
+         // if( output === ... ){
+         //   logWarning('depnedecy check failed; missing: ', output);
+         // }
+      });
 
 
 
