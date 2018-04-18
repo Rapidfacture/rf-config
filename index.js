@@ -90,7 +90,7 @@ var config = {
       // check if packageJson dependencies are up to Date
       require('check-dependencies')().then(function (output) {
          if (output.error && output.error.length > 0) {
-            logWarning('[rf-config] Please run "npm install", npm dependecy are not installed ord old: ', output.error);
+            logWarning('[rf-config] Please run "npm install", npm dependecy are not installed or old: ', output.error);
          }
       });
 
