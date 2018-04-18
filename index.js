@@ -16,8 +16,8 @@ function logWarning () {
    var args = [].slice.apply(arguments); // convert arguments to an array
    var red = '\x1b[31m';
    var black = '\x1b[0m';
-   args.unshift(red);
    args.unshift('[rf-config]');
+   args.unshift(red);
    args.push(black);
    console.log.apply(this, args);
 }
@@ -41,7 +41,7 @@ var config = {
       } else if (tryConfigPath(paths.root + 'config/conf/config.js')) {
       } else if (tryConfigPath(paths.root + 'config/conf.default/config.js')) {
       } else {
-         logError("[rf-config] Both config file pathes seem incorrect; customConfigFile: '" + paths.customConfigFile +
+         logError(" Both config file pathes seem incorrect; customConfigFile: '" + paths.customConfigFile +
          "' and defaultConfigFile:'" + paths.defaultConfigFile + "'", 'Please create a config file');
          return;
       }
