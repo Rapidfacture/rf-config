@@ -10,7 +10,7 @@
      },
     "main": "index.js",
     "scripts": {
-      "prepublish": "sh test/isRepoClean && npm test",
+      "prepublish": "npm test",
       "test": "grunt"
    },
     "devDependencies": {
