@@ -49,7 +49,7 @@ var config = { },
       if (pathExists(sourcePath)) {
          const envfile = require('envfile');
          let env = envfile.parseFileSync(sourcePath);
-         console.log(env);
+         log.info(`reading ${sourcePath}: `, env);
          Object.assign(config, env);
       }
 
