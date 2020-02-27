@@ -4,12 +4,14 @@ var fs = require('fs');
 
 // error handling
 
+var red = '\x1b[31m';
+var black = '\x1b[0m';
+
 // logging
 var log = {
+   info: console.log,
    warning: function () {
       var args = [].slice.apply(arguments); // convert arguments to an array
-      var red = '\x1b[31m';
-      var black = '\x1b[0m';
       args.unshift('[rf-config]');
       args.unshift(red);
       args.push(black);
@@ -60,7 +62,7 @@ var config = { },
             config.paths.configFolder = confPath;
             validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
          } else {
-            log.critical(`Config folder path ${confPath} is incorrect`);
+            log.info(`Config folder path ${confPath} is incorrect`);
          }
       }
 
