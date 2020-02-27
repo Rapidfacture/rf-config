@@ -35,22 +35,32 @@ var config = {
       paths.root += '/';
 
 
+      // read config file
       config = tryConfigPath(paths.root + 'config/config.js');
-
       validatePathesAndMakeAbsolute(config.paths, paths.root);
       config.paths.root = config.paths.root || paths.root; // import root path
 
+
+      // read .env file
+      const sourcePath = '.env';
+      if (pathExists(sourcePath)) {
+         const envfile = require('envfile');
+         let env = envfile.parseFileSync(sourcePath);
+         console.log(env);
+         Object.assign(config, env);
+      }
+
+
+      // TODO: remove, when mail templates are moved to db
       // get config folder
       if (config.configPaths) {
-         if (tryConfigFolder(paths.customConfigFolder)) {
-         } else if (tryConfigFolder(paths.defaultConfigFolder)) {
-         } else if (tryConfigFolder(paths.root + 'config/conf/')) {
-         } else if (tryConfigFolder(paths.root + 'config/conf.default/')) {
+         var confPath = paths.root + 'config/conf/';
+         if (pathExists(confPath)) {
+            config.paths.configFolder = confPath;
+            validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
          } else {
-            log.critical("Both config folder pathes seem incorrect; customConfigFolder: '" + paths.customConfigFolder +
-           "' and defaultConfigFolder:'" + paths.defaultConfigFolder + "'", 'Please create a config file');
+            log.critical(`Config folder path ${confPath} is incorrect`);
          }
-         validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
       }
 
 
@@ -150,14 +160,6 @@ function tryConfigPath (path) {
    }
 }
 
-
-function tryConfigFolder (path) {
-   if (pathExists(path)) {
-      config.paths.configFolder = path;
-      return true;
-   }
-   return false;
-}
 
 
 function pathExists (path) {

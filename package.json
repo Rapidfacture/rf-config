@@ -18,6 +18,7 @@
       "grunt-eslint":"20.1.0"
    },
    "dependencies":{
-      "check-dependencies": "1.1.0"
+      "check-dependencies": "1.1.0",
+      "envfile": "4.5.0"
    }
 }
