@@ -25,18 +25,19 @@ try { // try using rf-log
 
 
 
-var config = {
-      paths: {},
-      configPaths: {}
-   },
+var config = { },
    init = function (dirname) {
-      var paths = module.exports.paths;
+      var paths = module.exports.paths || {};
       paths.root = dirname || __dirname;
       paths.root += '/';
 
 
       // read config file
-      config = tryConfigPath(paths.root + 'config/config.js');
+      config = tryConfigPath(paths.root + 'config/config.js') || {};
+
+      config.paths = config.paths || {};
+      config.configPaths = config.configPaths || {};
+
       validatePathesAndMakeAbsolute(config.paths, paths.root);
       config.paths.root = config.paths.root || paths.root; // import root path
 
@@ -129,14 +130,16 @@ module.exports.init = init; // return once for module init
 
 
 
-function validatePathesAndMakeAbsolute (pathArray, prefix) {
-   for (var key in pathArray) {
-      if (prefix) {
-         pathArray[key] = prefix + pathArray[key]; // prefix => make everything absolute
-      }
+function validatePathesAndMakeAbsolute (pathObj, prefix) {
+   if (pathObj) {
+      for (var key in pathObj) {
+         if (prefix) {
+            pathObj[key] = prefix + pathObj[key]; // prefix => make everything absolute
+         }
 
-      if (!pathExists(pathArray[key])) {
-         log.critical("Directory '" + pathArray[key] + "' does not exist -- please create it.");
+         if (!pathExists(pathObj[key])) {
+            log.critical("Directory '" + pathObj[key] + "' does not exist -- please create it.");
+         }
       }
    }
 }
@@ -156,7 +159,7 @@ function tryConfigPath (path) {
          log.critical('Error in loading config file ' + path, err);
       }
    } else {
-      log.critical(`Config file path ${path} incorrect`);
+      log.warning(`No Config file found at path ${path}`);
    }
 }
 

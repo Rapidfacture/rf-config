@@ -3,8 +3,6 @@ var execSync = require('child_process').execSync;
 
 exec('node test1.js');
 exec('node test2.js');
-exec('node test3.js');
-exec('node test3.js');
 
 function exec (cmd) {
    try {
