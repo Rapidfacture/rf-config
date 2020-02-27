@@ -3,24 +3,25 @@
 var fs = require('fs');
 
 // error handling
-var logError = function (err) {
-   throw new Error(console.log(err));
+
+// logging
+var log = {
+   warning: function () {
+      var args = [].slice.apply(arguments); // convert arguments to an array
+      var red = '\x1b[31m';
+      var black = '\x1b[0m';
+      args.unshift('[rf-config]');
+      args.unshift(red);
+      args.push(black);
+      console.log.apply(this, args);
+   },
+   critical: function (err) {
+      throw new Error(console.log(err));
+   }
 };
 try { // try using rf-log
-   var critical = require(require.resolve('rf-log')).critical;
-   if (critical) logError = critical;
+   log = require(require.resolve('rf-log')).customPrefixLogger('[rf-config]');
 } catch (e) {}
-
-
-function logWarning () {
-   var args = [].slice.apply(arguments); // convert arguments to an array
-   var red = '\x1b[31m';
-   var black = '\x1b[0m';
-   args.unshift('[rf-config]');
-   args.unshift(red);
-   args.push(black);
-   console.log.apply(this, args);
-}
 
 
 
@@ -34,21 +35,10 @@ var config = {
       paths.root += '/';
 
 
+      config = tryConfigPath(paths.root + 'config/config.js');
 
-      // get config file
-      if (tryConfigPath(paths.customConfigFile)) {
-      } else if (tryConfigPath(paths.defaultConfigFile)) {
-      } else if (tryConfigPath(paths.root + 'config/conf/config.js')) {
-      } else if (tryConfigPath(paths.root + 'config/conf.default/config.js')) {
-      } else {
-         logError(" Both config file pathes seem incorrect; customConfigFile: '" + paths.customConfigFile +
-         "' and defaultConfigFile:'" + paths.defaultConfigFile + "'", 'Please create a config file');
-         return;
-      }
       validatePathesAndMakeAbsolute(config.paths, paths.root);
       config.paths.root = config.paths.root || paths.root; // import root path
-
-
 
       // get config folder
       if (config.configPaths) {
@@ -57,12 +47,11 @@ var config = {
          } else if (tryConfigFolder(paths.root + 'config/conf/')) {
          } else if (tryConfigFolder(paths.root + 'config/conf.default/')) {
          } else {
-            logError("[rf-config] Both config folder pathes seem incorrect; customConfigFolder: '" + paths.customConfigFolder +
+            log.critical("Both config folder pathes seem incorrect; customConfigFolder: '" + paths.customConfigFolder +
            "' and defaultConfigFolder:'" + paths.defaultConfigFolder + "'", 'Please create a config file');
          }
          validatePathesAndMakeAbsolute(config.configPaths, config.paths.configFolder);
       }
-
 
 
       // get package.json
@@ -79,10 +68,10 @@ var config = {
                packageJson: packageJson
             };
          } catch (err) {
-            logError('[rf-config] packageJson Error ', err);
+            log.critical('packageJson Error ', err);
          }
       } else {
-         logError("[rf-config] packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
+         log.critical("packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
       }
 
 
@@ -90,7 +79,7 @@ var config = {
       // check if packageJson dependencies are up to Date
       require('check-dependencies')().then(function (output) {
          if (output.error && output.error.length > 0) {
-            logWarning('[rf-config] Please run "npm install", npm dependecy are not installed or old: ', output.error);
+            log.error('Please run "npm install", npm dependecy are not installed or old: ', output.error);
          }
       });
 
@@ -105,10 +94,10 @@ var config = {
                encoding: 'utf8'
             });
          } catch (err) {
-            logError('[rf-config] licenseFile Error ', err);
+            log.critical('licenseFile Error ', err);
          }
       } else {
-         logError("[rf-config] licenseFile '" + paths.licenseFile + "' does not exist.");
+         log.critical("licenseFile '" + paths.licenseFile + "' does not exist.");
       }
 
 
@@ -137,7 +126,7 @@ function validatePathesAndMakeAbsolute (pathArray, prefix) {
       }
 
       if (!pathExists(pathArray[key])) {
-         logError("[rf-config] Directory '" + pathArray[key] + "' does not exist -- please create it.");
+         log.critical("Directory '" + pathArray[key] + "' does not exist -- please create it.");
       }
    }
 }
@@ -149,17 +138,16 @@ function tryConfigPath (path) {
          var confTemp = require(path);
          try {
             // copy; keep original clean => loading again possible
-            config = JSON.parse(JSON.stringify(confTemp));
+            return JSON.parse(JSON.stringify(confTemp));
          } catch (err) {
-            logError('[rf-config] Error in parsing config file ' + path, err);
+            log.critical('Error in parsing config file ' + path, err);
          }
       } catch (err) {
-         logError('[rf-config] Error in loading config file ' + path, err);
+         log.critical('Error in loading config file ' + path, err);
       }
-
-      return true;
+   } else {
+      log.critical(`Config file path ${path} incorrect`);
    }
-   return false;
 }
 
 
