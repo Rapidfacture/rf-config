@@ -1,6 +1,6 @@
 # rf-config
 
-NodeJS config loader. Reads a config.js, package.json, LICENSE and .env
+NodeJS config loader. Reads a config.js, package.json, LICENSE, .env and CHANGELOG.md.
 
 
 ## Getting Started

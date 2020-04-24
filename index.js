@@ -110,7 +110,21 @@ var config = { },
             log.critical('licenseFile Error ', err);
          }
       } else {
-         log.critical("licenseFile '" + paths.licenseFile + "' does not exist.");
+         log.warning("licenseFile '" + paths.licenseFile + "' does not exist.");
+      }
+
+
+      // optional: get changelog file
+      paths.changelogFile = paths.changelogFile || paths.root + 'CHANGELOG.md';
+      if (pathExists(paths.changelogFile)) {
+         try {
+            config.app = config.app || {};
+            config.app.changelogFile = fs.readFileSync(paths.changelogFile, {
+               encoding: 'utf8'
+            });
+         } catch (err) {
+            log.critical('changelogFile Error ', err);
+         }
       }
 
 
