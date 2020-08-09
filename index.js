@@ -5,18 +5,14 @@ let log = require('rf-log').customPrefixLogger('[rf-config]');
 
 
 
-let config = {
-   app: {}
-};
-
 function init (dirname) {
-   let paths = module.exports.paths || {};
-   paths.root = dirname || __dirname;
-   paths.root += '/';
+   let paths = {
+      root: (dirname || __dirname) + '/'
+   };
 
 
    // config.js
-   config = readConfigFile(paths.root + 'config/config.js');
+   let config = readConfigFile(paths.root + 'config/config.js');
 
 
    // package.json
@@ -87,7 +83,6 @@ function init (dirname) {
 
 // expose interface
 module.exports = {
-   paths: {},
    init
 };
 
