@@ -15,13 +15,11 @@ function init (dirname) {
    paths.root += '/';
 
 
-
-   // read config
+   // config.js
    config = readConfigFile(paths.root + 'config/config.js');
 
 
-
-   // read package.json
+   // package.json
    checkFile(paths.root + 'package.json', function (content) {
       try {
          var packageJson = JSON.parse(content);
@@ -39,8 +37,7 @@ function init (dirname) {
    });
 
 
-
-   // read license file
+   // LICENSE
    checkFile(paths.root + 'LICENSE', function (content) {
       config.app.license = content;
    }, function () {
@@ -48,12 +45,10 @@ function init (dirname) {
    });
 
 
-
-   // optional: read changelog file
+   // CHANGELOG.md
    checkFile(paths.root + 'CHANGELOG.md', function (content) {
       config.app.changelogFile = content;
    });
-
 
 
    // keep the old relative paths in a copy:
@@ -62,8 +57,7 @@ function init (dirname) {
    validatePathesAndMakeAbsolute(config.paths, paths.root);
 
 
-
-   // read .env file
+   // .env file
    const sourcePath = '.env';
    if (fs.existsSync(sourcePath)) {
       const envfile = require('envfile');
