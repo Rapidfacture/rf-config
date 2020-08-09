@@ -10,16 +10,17 @@ NodeJS config loader. Reads a config.js, package.json, LICENSE, .env and CHANGEL
 To load this config.js file in `./config/config.js`:
 ```js
 module.exports = {
+
+   // we can have any content here
    config: 'local',
    abc: 'def',
+
+   // "paths" is predefined to store all projects paths
    paths: {
       myReadme: 'README.md', // /README.md in root folder
       gitignore: '.gitignore',
       webserver: 'dest',
       server: 'server',
-   },
-   configPaths : {
-      mail : 'mail' // converted to /config/conf/mail (main config folder)
    }
 };
 ```
@@ -33,16 +34,25 @@ console.log(config);
 // this returns a configuration like:
 
 {
-   config: 'local',
+
+   config: 'local',   // variables
    abc: 'def',
-   paths: {
+
+   paths: {          // the paths in absolute form for easy backend use
       myReadme: '/home/user/project/README.md',
-      gitignore: '/home/user/project/.gitignore'
+      gitignore: '/home/user/project/.gitignore',
+      webserver: '/home/user/project/dest',
+      server: '/home/user/project/server',
    },
-   configPaths: {
-      mail: '/home/user/project/config/conf/mail',
+
+   pathsRelative: {  // the paths also relative
+      myReadme: 'README.md',
+      gitignore: '.gitignore',
+      webserver: 'dest',
+      server: 'server',
    },
-   app: {
+
+   app: {            // other infos we got for the app
       name: 'rf-config',
       version: '0.1.6',
       packageJson: {
