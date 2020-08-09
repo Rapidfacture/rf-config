@@ -11,7 +11,7 @@
    "main": "index.js",
    "scripts": {
       "prepublish": "npm test",
-      "test": "grunt && node test.js"
+      "test": "grunt"
    },
    "devDependencies": {
       "grunt": "1.0.1",
