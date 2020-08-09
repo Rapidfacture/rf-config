@@ -22,12 +22,9 @@ function init (dirname) {
 
 
    // read package.json
-   paths.packageJsonPath = paths.packageJsonPath || paths.root + 'package.json';
-   if (fs.existsSync(paths.packageJsonPath)) {
+   checkFile(paths.root + 'package.json', function (content) {
       try {
-         var packageJson = JSON.parse(fs.readFileSync(paths.packageJsonPath, {
-            encoding: 'utf8'
-         }));
+         var packageJson = JSON.parse(content);
 
          config.app = {
             name: packageJson.name,
@@ -37,9 +34,9 @@ function init (dirname) {
       } catch (err) {
          log.critical('packageJson Error ', err);
       }
-   } else {
-      log.critical("packageJsonPath '" + paths.packageJsonPath + "' does not exist.");
-   }
+   }, function () {
+      log.critical('package.json does not exist.');
+   });
 
 
 
@@ -47,7 +44,7 @@ function init (dirname) {
    checkFile(paths.root + 'LICENSE', function (content) {
       config.app.license = content;
    }, function () {
-      log.warning("licenseFile '" + paths.licenseFile + "' does not exist.");
+      log.warning('LICENSE does not exist.');
    });
 
 
@@ -120,24 +117,6 @@ function readConfigFile (path) {
    }
 }
 
-
-
-function validatePathesAndMakeAbsolute (pathObj, prefix) {
-   if (pathObj) {
-      for (var key in pathObj) {
-         if (prefix) {
-            pathObj[key] = prefix + pathObj[key]; // prefix => make everything absolute
-         }
-
-         if (!fs.existsSync(pathObj[key])) {
-            log.critical("Directory '" + pathObj[key] + "' does not exist -- please create it.");
-         }
-      }
-   }
-}
-
-
-
 function checkFile (path, successFunc, warningFunction) {
    if (fs.existsSync(path)) {
       try {
@@ -150,5 +129,19 @@ function checkFile (path, successFunc, warningFunction) {
       }
    } else if (warningFunction) {
       warningFunction();
+   }
+}
+
+function validatePathesAndMakeAbsolute (pathObj, prefix) {
+   if (pathObj) {
+      for (var key in pathObj) {
+         if (prefix) {
+            pathObj[key] = prefix + pathObj[key]; // prefix => make everything absolute
+         }
+
+         if (!fs.existsSync(pathObj[key])) {
+            log.critical("Directory '" + pathObj[key] + "' does not exist -- please create it.");
+         }
+      }
    }
 }
