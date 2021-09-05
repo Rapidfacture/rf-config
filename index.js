@@ -1,19 +1,18 @@
 // rf-config, read config.js, .env, packages.json, README and CHANGELOG
-
 let fs = require('fs');
 let log = require('rf-log').customPrefixLogger('[rf-config]');
-
-
 
 function init (dirname) {
    let paths = {
       root: (dirname || __dirname) + '/'
    };
 
-
-   // config.js
+   // config/config.js => regular config
    let config = readConfigFile(paths.root + 'config/config.js');
 
+   // config.js => custom config overwrites regular config
+   let customConfig = readConfigFile(paths.root + 'config.js');
+   Object.assign(config, customConfig);
 
    // package.json
    checkFile(paths.root + 'package.json', function (content) {
@@ -32,7 +31,6 @@ function init (dirname) {
       log.critical('package.json does not exist.');
    });
 
-
    // LICENSE
    checkFile(paths.root + 'LICENSE', function (content) {
       config.app.license = content;
@@ -40,18 +38,15 @@ function init (dirname) {
       log.warning('LICENSE does not exist.');
    });
 
-
    // CHANGELOG.md
    checkFile(paths.root + 'CHANGELOG.md', function (content) {
       config.app.changelogFile = content;
    });
 
-
    // keep the old relative paths in a copy:
    config.pathsRelative = config.paths || {};
    // then make them all absolute for easy usage in app
    validatePathesAndMakeAbsolute(config.paths, paths.root);
-
 
    // .env file
    const sourcePath = '.env';
@@ -62,15 +57,12 @@ function init (dirname) {
       Object.assign(config, env);
    }
 
-
    // check if packageJson dependencies are up to Date
    require('check-dependencies')().then(function (output) {
       if (output.error && output.error.length > 0) {
          log.error('Please run "npm install", npm dependecy are not installed or old: ', output.error);
       }
    });
-
-
 
    // put config in export
    // the init function is no longer accessibel => config should not be loaded twice!
@@ -79,14 +71,10 @@ function init (dirname) {
    return module.exports;
 }
 
-
-
 // expose interface
 module.exports = {
    init
 };
-
-
 
 function readConfigFile (path) {
    if (fs.existsSync(path)) {
@@ -102,7 +90,7 @@ function readConfigFile (path) {
          log.critical('Error in loading config file ' + path, err);
       }
    } else {
-      log.warning(`No Config file found at path ${path}`);
+      log.info(`No Config file found at path ${path}`);
    }
 }
 
