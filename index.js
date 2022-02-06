@@ -1,24 +1,22 @@
 // rf-config, read config.js, .env, packages.json, README and CHANGELOG
 let fs = require('fs');
+let path = require('path');
 let log = require('rf-log').customPrefixLogger('[rf-config]');
 
 function init (dirname) {
-   let paths = {
-      root: (dirname || __dirname) + '/'
-   };
+   let rootPath = dirname || __dirname;
 
    // config/config.js => regular config
-   let config = readConfigFile(paths.root + 'config/config.js');
+   let config = readConfigFile(path.join(rootPath, './config/config.js'));
 
    // config.js => custom config overwrites regular config
-   let customConfig = readConfigFile(paths.root + 'config.js');
+   let customConfig = readConfigFile(path.join(rootPath, './config.js'));
    Object.assign(config, customConfig);
 
    // package.json
-   checkFile(paths.root + 'package.json', function (content) {
+   checkFile(path.join(rootPath, './package.json'), function (content) {
       try {
          var packageJson = JSON.parse(content);
-
          config.app = {
             name: packageJson.name,
             version: packageJson.version,
@@ -32,21 +30,21 @@ function init (dirname) {
    });
 
    // LICENSE
-   checkFile(paths.root + 'LICENSE', function (content) {
+   checkFile(path.join(rootPath, './LICENSE'), function (content) {
       config.app.license = content;
    }, function () {
       log.warning('LICENSE does not exist.');
    });
 
    // CHANGELOG.md
-   checkFile(paths.root + 'CHANGELOG.md', function (content) {
+   checkFile(path.join(rootPath, './CHANGELOG.md'), function (content) {
       config.app.changelogFile = content;
    });
 
    // keep the old relative paths in a copy:
    config.pathsRelative = config.paths || {};
    // then make them all absolute for easy usage in app
-   validatePathesAndMakeAbsolute(config.paths, paths.root);
+   validatePathesAndMakeAbsolute(config.paths, rootPath);
 
    // .env file
    const sourcePath = '.env';
@@ -76,45 +74,45 @@ module.exports = {
    init
 };
 
-function readConfigFile (path) {
-   if (fs.existsSync(path)) {
+function readConfigFile (configPath) {
+   if (fs.existsSync(configPath)) {
       try {
-         var confTemp = require(path);
+         var confTemp = require(configPath);
          try {
             // copy; keep original clean => loading again possible
             return JSON.parse(JSON.stringify(confTemp));
          } catch (err) {
-            log.critical('Error in parsing config file ' + path, err);
+            log.critical('Error in parsing config file ' + configPath, err);
          }
       } catch (err) {
-         log.critical('Error in loading config file ' + path, err);
+         log.critical('Error in loading config file ' + configPath, err);
       }
    } else {
-      log.info(`No Config file found at path ${path}`);
+      log.info(`No Config file found at ${configPath}`);
    }
 }
 
-function checkFile (path, successFunc, warningFunction) {
-   if (fs.existsSync(path)) {
+function checkFile (filePath, successFunc, warningFunction) {
+   if (fs.existsSync(filePath)) {
       try {
-         let content = fs.readFileSync(path, {
+         let content = fs.readFileSync(filePath, {
             encoding: 'utf8'
          });
          successFunc(content);
       } catch (err) {
-         log.critical(`attemt failed to read ${path}`, err);
+         log.critical(`attemt failed to read ${filePath}`, err);
       }
    } else if (warningFunction) {
       warningFunction();
    }
 }
 
-function validatePathesAndMakeAbsolute (pathObj, prefix) {
+function validatePathesAndMakeAbsolute (pathObj, rootPath) {
    if (pathObj) {
       for (var key in pathObj) {
-         if (prefix) {
-            pathObj[key] = prefix + pathObj[key]; // prefix => make everything absolute
-         }
+
+         // make everything absolute
+         if (rootPath) pathObj[key] = path.join(rootPath, pathObj[key]);
 
          if (!fs.existsSync(pathObj[key])) {
             log.critical("Directory '" + pathObj[key] + "' does not exist -- please create it.");
